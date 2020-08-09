@@ -1,0 +1,7 @@
+2020-08-09T22:06:01.015Z [my-bank-api] error: EPIPE: broken pipe, write
+2020-08-09T22:07:26.339Z [my-bank-api] error: GET /account - ENOENT: no such file or directory, open 'C:\Users\Carol\Documents\prog\bootcamp igti\Nova pasta\my-bank-api\accounts.json'
+2020-08-09T22:12:04.608Z [my-bank-api] info: API Started and file created!
+2020-08-09T22:16:01.668Z [my-bank-api] info: API Started and file created!
+2020-08-09T22:17:13.961Z [my-bank-api] info: GET /account
+2020-08-09T22:18:57.735Z [my-bank-api] info: POST /account - {"id":1,"name":"Rita de Cássia","balance":"7000"}
+2020-08-09T22:19:21.804Z [my-bank-api] info: GET /account/:id

@@ -1,11 +1,12 @@
 import express from 'express';
 import { promises as fs } from 'fs';
+import winston from 'winston';
 
 const router = express.Router();
 const { readFile, writeFile } = fs;
 
 //usando o POST para passar informação, nesse caso de um novo usuário
-router.post('/', async (req, res) => {
+router.post('/', async (req, res, next) => {
   try {
     //armazenando o body numa variável
     let account = req.body;
@@ -20,27 +21,30 @@ router.post('/', async (req, res) => {
     await writeFile(global.fileName, JSON.stringify(data, null, 2));
 
     res.send(account);
+
+    logger.info(`POST /account - ${JSON.stringify(account)}`);
   } catch (err) {
-    res.status(400).send({ error: err.message });
+    next(err);
   }
 });
 
 //usando o GET para retornar informação para o usuário
 //mas ele retorna todos os usuários
-router.get('/', async (req, res) => {
+router.get('/', async (req, res, next) => {
   try {
     const data = JSON.parse(await readFile(global.fileName));
     // deletando pro usuário o nextId
     delete data.nextId;
     // mostrando todos os usuários
     res.send(data);
+    logger.info('GET /account');
   } catch (err) {
-    res.status(400).send({ error: err.message });
+    next(err);
   }
 });
 
 //retornando apenas um usuário
-router.get('/:id', async (req, res) => {
+router.get('/:id', async (req, res, next) => {
   try {
     const data = JSON.parse(await readFile(global.fileName));
     // procurando apenas o id que passamos como parametro
@@ -50,13 +54,14 @@ router.get('/:id', async (req, res) => {
     );
     //retornando o usuário
     res.send(account);
+    logger.info('GET /account/:id');
   } catch (err) {
-    res.status(400).send({ error: err.message });
+    next(err);
   }
 });
 
 // usando DELETE
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', async (req, res, next) => {
   try {
     //lendo o arquivo json
     const data = JSON.parse(await readFile(global.fileName));
@@ -68,13 +73,14 @@ router.delete('/:id', async (req, res) => {
 
     await writeFile(global.fileName, JSON.stringify(data, null, 2));
     res.end();
+    logger.info(`DELETE /account/:id - ${req.params.id}`);
   } catch (err) {
-    res.status(400).send({ error: err.message });
+    next(err);
   }
 });
 
 //usando PUT (atualização de todos os recursos)
-router.put('/', async (req, res) => {
+router.put('/', async (req, res, next) => {
   try {
     const account = req.body;
     //encontrando o usuário e alterando todos os dados
@@ -88,13 +94,14 @@ router.put('/', async (req, res) => {
 
     //mostrando pro usuário que foi alterado com sucesso
     res.send(account);
+    logger.info(`PUT /account - ${JSON.stringify(account)}`);
   } catch (err) {
-    res.status(400).send({ error: err.message });
+    next(err);
   }
 });
 
 //usando PATCH (atualização parcial de recurso)
-router.patch('/updateBalance', async (req, res) => {
+router.patch('/updateBalance', async (req, res, next) => {
   try {
     const account = req.body;
     //encontrando o usuário e alterando dados
@@ -108,8 +115,16 @@ router.patch('/updateBalance', async (req, res) => {
 
     //mostrando pro usuário que foi alterado com sucesso
     res.send(data.accounts[index]);
+    logger.info(`PATCH /account/updateBalance - ${JSON.stringify(account)}`);
   } catch (err) {
-    res.status(400).send({ error: err.message });
+    next(err);
   }
+});
+
+//tratamento de erros
+//função de tratamento de erro e aplicando em todos os catch's anteriores
+router.use((err, req, res, next) => {
+  global.logger.error(`${req.method} ${req.baseUrl} - ${err.message}`);
+  res.status(400).send({ error: err.message });
 });
 export default router;
