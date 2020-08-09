@@ -45,10 +45,29 @@ router.get('/:id', async (req, res) => {
     const data = JSON.parse(await readFile(global.fileName));
     // procurando apenas o id que passamos como parametro
     const account = data.accounts.find(
+      // lembrando de usar o parseInt para converter a string
       (account) => account.id === parseInt(req.params.id)
     );
     //retornando o usuário
     res.send(account);
+  } catch (err) {
+    res.status(400).send({ error: err.message });
+  }
+});
+
+// usando DELETE
+router.delete('/:id', async (req, res) => {
+  try {
+    //lendo o arquivo json
+    const data = JSON.parse(await readFile(global.fileName));
+    //filtrando e retirando o id que passamos
+    //lembrando que temos que armazenar numa variável os dados filtrados
+    data.accounts = data.accounts.filter(
+      (account) => account.id !== parseInt(req.params.id)
+    );
+
+    await writeFile(global.fileName, JSON.stringify(data, null, 2));
+    res.end();
   } catch (err) {
     res.status(400).send({ error: err.message });
   }
