@@ -72,4 +72,44 @@ router.delete('/:id', async (req, res) => {
     res.status(400).send({ error: err.message });
   }
 });
+
+//usando PUT (atualização de todos os recursos)
+router.put('/', async (req, res) => {
+  try {
+    const account = req.body;
+    //encontrando o usuário e alterando todos os dados
+    const data = JSON.parse(await readFile(global.fileName));
+    const index = data.accounts.findIndex((a) => a.id === account.id);
+
+    data.accounts[index] = account;
+
+    //escrevendo o arquivo com as atualizações
+    await writeFile(global.fileName, JSON.stringify(data));
+
+    //mostrando pro usuário que foi alterado com sucesso
+    res.send(account);
+  } catch (err) {
+    res.status(400).send({ error: err.message });
+  }
+});
+
+//usando PATCH (atualização parcial de recurso)
+router.patch('/updateBalance', async (req, res) => {
+  try {
+    const account = req.body;
+    //encontrando o usuário e alterando dados
+    const data = JSON.parse(await readFile(global.fileName));
+    const index = data.accounts.findIndex((a) => a.id === account.id);
+
+    data.accounts[index].balance = account.balance;
+
+    //escrevendo o arquivo com a atualização do balance
+    await writeFile(global.fileName, JSON.stringify(data));
+
+    //mostrando pro usuário que foi alterado com sucesso
+    res.send(data.accounts[index]);
+  } catch (err) {
+    res.status(400).send({ error: err.message });
+  }
+});
 export default router;
