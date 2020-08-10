@@ -10,11 +10,21 @@ router.post('/', async (req, res, next) => {
   try {
     //armazenando o body numa variável
     let account = req.body;
+
+    //validando os campos name e balance
+    if (!account.name || account.balance == null) {
+      throw new Error('Name e Balance são obrigatórios');
+    }
     //lendo o documento json que criamos
     const data = JSON.parse(await readFile(global.fileName));
 
     //incrementando novo id
-    account = { id: data.nextId++, ...account };
+    //incrementando dessa forma não permitimos que campos aleatórios sejam criados
+    account = {
+      id: data.nextId++,
+      name: account.name,
+      balance: account.balance,
+    };
     data.accounts.push(account);
 
     //escrevendo o novo usuário no json
@@ -83,14 +93,24 @@ router.delete('/:id', async (req, res, next) => {
 router.put('/', async (req, res, next) => {
   try {
     const account = req.body;
+
+    // validando campos no PUT
+    if (!account.id || !account.name || account.balance == null) {
+      throw new Error('Id, Name e Balance são obrigatórios');
+    }
     //encontrando o usuário e alterando todos os dados
     const data = JSON.parse(await readFile(global.fileName));
     const index = data.accounts.findIndex((a) => a.id === account.id);
 
-    data.accounts[index] = account;
+    // verificando se o index existe
+    if (index === -1) {
+      throw new Error('Registro não encontrado');
+    }
+    data.accounts[index].name = account.name;
+    data.accounts[index].balance = account.balance;
 
     //escrevendo o arquivo com as atualizações
-    await writeFile(global.fileName, JSON.stringify(data));
+    await writeFile(global.fileName, JSON.stringify(data, null, 2));
 
     //mostrando pro usuário que foi alterado com sucesso
     res.send(account);
@@ -108,10 +128,17 @@ router.patch('/updateBalance', async (req, res, next) => {
     const data = JSON.parse(await readFile(global.fileName));
     const index = data.accounts.findIndex((a) => a.id === account.id);
 
+    if (!account.id || account.balance == null) {
+      throw new Error('Id e Balance são obrigatórios');
+    }
+    if (index === -1) {
+      throw new Error('Registro não encontrado');
+    }
+
     data.accounts[index].balance = account.balance;
 
     //escrevendo o arquivo com a atualização do balance
-    await writeFile(global.fileName, JSON.stringify(data));
+    await writeFile(global.fileName, JSON.stringify(data, null, 2));
 
     //mostrando pro usuário que foi alterado com sucesso
     res.send(data.accounts[index]);
