@@ -32,3 +32,21 @@
 2020-08-10T00:26:15.152Z [my-bank-api] error: PATCH /account - Id e Balance são obrigatórios
 2020-08-10T00:27:21.461Z [my-bank-api] info: API Started and file created!
 2020-08-10T00:27:33.273Z [my-bank-api] error: PUT /account - Id, Name e Balance são obrigatórios
+2020-08-10T19:44:58.609Z [my-bank-api] info: API Started and file created!
+2020-08-10T21:41:50.618Z [my-bank-api] info: API Started!
+2020-08-10T23:26:52.471Z [my-bank-api] info: GET /account
+2020-08-10T23:29:17.537Z [my-bank-api] info: API Started!
+2020-08-10T23:29:40.724Z [my-bank-api] info: GET /account
+2020-08-10T23:30:02.037Z [my-bank-api] info: API Started!
+2020-08-10T23:30:11.914Z [my-bank-api] info: GET /account
+2020-08-10T23:31:01.028Z [my-bank-api] info: API Started!
+2020-08-10T23:31:27.989Z [my-bank-api] info: GET /account
+2020-08-10T23:32:23.992Z [my-bank-api] info: GET /account
+2020-08-11T00:16:50.536Z [my-bank-api] info: API Started!
+2020-08-11T00:17:56.275Z [my-bank-api] info: API Started!
+2020-08-11T00:22:48.121Z [my-bank-api] info: API Started!
+2020-08-11T00:24:10.327Z [my-bank-api] info: GET /account
+2020-08-11T00:25:57.194Z [my-bank-api] info: POST /account - {"id":1,"name":"Ana Carolina","balance":6742.34}
+2020-08-11T00:26:21.531Z [my-bank-api] info: POST /account - {"id":2,"name":"Marcio Henrique","balance":20000}
+2020-08-11T00:26:35.274Z [my-bank-api] info: GET /account
+2020-08-11T00:27:14.831Z [my-bank-api] error: PUT /account - Id, Name e Balance são obrigatórios

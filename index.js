@@ -5,6 +5,9 @@ import accountsRouter from './routes/accounts.js';
 import { promises as fs } from 'fs';
 //biblioteca para tratamento de erros
 import winston from 'winston';
+import cors from 'cors';
+import swaggerUi from 'swagger-ui-express';
+import { swaggerDocument } from './doc.js';
 
 const { readFile, writeFile } = fs;
 //como essa variável está sendo usada em vários arquivos, vamos globalizá-la
@@ -26,7 +29,9 @@ global.logger = winston.createLogger({
 
 const app = express();
 app.use(express.json());
-
+// declarar cors antes das rotas
+app.use(cors());
+app.use('/doc', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use('/account', accountsRouter);
 
 app.listen(3000, async () => {
